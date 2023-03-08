@@ -9,40 +9,40 @@ use std::ops::{Add, Div, Mul, Neg, Sub};
     debug_ulps_diff_derive = "Clone, Copy, Debug, PartialEq",
     all_tol = "f64"
 )]
-#[derive(Clone, Debug)]
-struct Tuple {
-    x: f64,
-    y: f64,
-    z: f64,
-    w: f64,
+#[derive(Clone, Copy, Debug)]
+pub struct Tuple {
+    pub x: f64,
+    pub y: f64,
+    pub z: f64,
+    pub w: f64,
 }
 
 impl Tuple {
-    fn new(x: f64, y: f64, z: f64, w: f64) -> Self {
+    pub fn new(x: f64, y: f64, z: f64, w: f64) -> Self {
         Self { x, y, z, w }
     }
 
-    fn point(x: f64, y: f64, z: f64) -> Self {
+    pub fn point(x: f64, y: f64, z: f64) -> Self {
         Self { x, y, z, w: 1.0 }
     }
 
-    fn vector(x: f64, y: f64, z: f64) -> Self {
+    pub fn vector(x: f64, y: f64, z: f64) -> Self {
         Self { x, y, z, w: 0.0 }
     }
 
-    fn is_point(&self) -> bool {
+    pub fn is_point(&self) -> bool {
         self.w == 1.0
     }
 
-    fn is_vector(&self) -> bool {
+    pub fn is_vector(&self) -> bool {
         self.w == 0.0
     }
 
-    fn magnitude(&self) -> f64 {
+    pub fn magnitude(&self) -> f64 {
         (self.x.powf(2.0) + self.y.powf(2.0) + self.z.powf(2.0) + self.w.powf(2.0)).sqrt()
     }
 
-    fn normalize(&self) -> Self {
+    pub fn normalize(&self) -> Self {
         Self {
             x: self.x / self.magnitude(),
             y: self.y / self.magnitude(),
@@ -51,7 +51,7 @@ impl Tuple {
         }
     }
 
-    fn cross(&self, other: &Tuple) -> Self {
+    pub fn cross(&self, other: &Tuple) -> Self {
         Self::vector(
             self.y * other.z - self.z * other.y,
             self.z * other.x - self.x * other.z,
