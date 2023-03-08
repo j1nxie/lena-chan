@@ -1,4 +1,5 @@
 use float_eq::{derive_float_eq, float_eq};
+use std::ops::{Add, Neg, Sub};
 
 #[derive_float_eq(
     ulps_tol = "TupleUlps",
@@ -51,6 +52,45 @@ impl PartialEq for Tuple {
 }
 
 impl Eq for Tuple {}
+
+impl Add for Tuple {
+    type Output = Self;
+
+    fn add(self, other: Self) -> Self {
+        Self {
+            x: self.x + other.x,
+            y: self.y + other.y,
+            z: self.z + other.z,
+            w: self.w + other.w,
+        }
+    }
+}
+
+impl Sub for Tuple {
+    type Output = Self;
+
+    fn sub(self, other: Self) -> Self {
+        Self {
+            x: self.x - other.x,
+            y: self.y - other.y,
+            z: self.z - other.z,
+            w: self.w - other.w,
+        }
+    }
+}
+
+impl Neg for Tuple {
+    type Output = Self;
+
+    fn neg(self) -> Self {
+        Self {
+            x: -self.x,
+            y: -self.y,
+            z: -self.z,
+            w: -self.w,
+        }
+    }
+}
 
 #[cfg(test)]
 mod tests {
@@ -113,5 +153,31 @@ mod tests {
         let a = Tuple::point(1.0, 1.0, 2.0);
         let b = Tuple::vector(1.0, 1.0, 2.0);
         assert_ne!(a, b);
+    }
+
+    #[test]
+    fn test_add_tuple() {
+        let a = Tuple::point(1.0, 1.0, 2.0);
+        let b = Tuple::point(1.0, 1.0, 2.0);
+        let result = Tuple::new(2.0, 2.0, 4.0, 2.0);
+
+        assert_eq!(a + b, result);
+    }
+
+    #[test]
+    fn test_sub_tuple() {
+        let a = Tuple::point(1.0, 1.0, 2.0);
+        let b = Tuple::point(1.0, 1.0, 2.0);
+        let result = Tuple::new(0.0, 0.0, 0.0, 0.0);
+
+        assert_eq!(a - b, result);
+    }
+
+    #[test]
+    fn test_neg_tuple() {
+        let t = Tuple::point(1.0, 1.0, 2.0);
+        let result = Tuple::new(-1.0, -1.0, -2.0, -1.0);
+
+        assert_eq!(-t, result);
     }
 }
