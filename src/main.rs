@@ -1,4 +1,13 @@
-#[derive(Clone, Debug, PartialEq)]
+use float_eq::{derive_float_eq, float_eq};
+
+#[derive_float_eq(
+    ulps_tol = "TupleUlps",
+    ulps_tol_derive = "Clone, Copy, Debug, PartialEq",
+    debug_ulps_diff = "TupleDebugUlpsDiff",
+    debug_ulps_diff_derive = "Clone, Copy, Debug, PartialEq",
+    all_tol = "f64"
+)]
+#[derive(Clone, Debug)]
 struct Tuple {
     x: f64,
     y: f64,
@@ -27,6 +36,21 @@ impl Tuple {
         self.w == 0.0
     }
 }
+
+impl PartialEq for Tuple {
+    fn eq(&self, other: &Self) -> bool {
+        let cmp = Tuple {
+            x: 1.0 * f64::EPSILON,
+            y: 1.0 * f64::EPSILON,
+            z: 1.0 * f64::EPSILON,
+            w: 1.0 * f64::EPSILON,
+        };
+
+        float_eq!(self, other, abs <= cmp)
+    }
+}
+
+impl Eq for Tuple {}
 
 fn main() {
     println!("Hello, world!");
@@ -68,5 +92,30 @@ mod tests {
     fn test_new_vector() {
         let v = Tuple::vector(4.0, -4.0, 3.0);
         assert_eq!(v, Tuple::new(4.0, -4.0, 3.0, 0.0));
+    }
+
+    #[test]
+    fn test_cmp_point() {
+        let a = Tuple::point(1.0, 1.0, 2.0);
+        let b = Tuple::point(1.0, 1.0, 2.0);
+        let c = Tuple::point(1.0, 1.0, 1.0);
+        assert_eq!(a, b);
+        assert_ne!(a, c);
+    }
+
+    #[test]
+    fn test_cmp_vector() {
+        let a = Tuple::vector(1.0, 1.0, 2.0);
+        let b = Tuple::vector(1.0, 1.0, 2.0);
+        let c = Tuple::vector(1.0, 1.0, 1.0);
+        assert_eq!(a, b);
+        assert_ne!(a, c);
+    }
+
+    #[test]
+    fn test_cmp_point_vector() {
+        let a = Tuple::point(1.0, 1.0, 2.0);
+        let b = Tuple::vector(1.0, 1.0, 2.0);
+        assert_ne!(a, b);
     }
 }
