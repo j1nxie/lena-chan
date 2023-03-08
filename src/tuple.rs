@@ -1,6 +1,6 @@
 use float_eq::{assert_float_eq, derive_float_eq, float_eq};
 use std::f64::{self, EPSILON};
-use std::ops::{Add, Div, Mul, Neg, Sub};
+use std::ops::{Add, AddAssign, Div, Mul, Neg, Sub, SubAssign};
 
 #[derive_float_eq(
     ulps_tol = "TupleUlps",
@@ -88,11 +88,33 @@ impl Add for Tuple {
     }
 }
 
+impl AddAssign for Tuple {
+    fn add_assign(&mut self, other: Self) {
+        *self = Self {
+            x: self.x + other.x,
+            y: self.y + other.y,
+            z: self.z + other.z,
+            w: self.w + other.w,
+        }
+    }
+}
+
 impl Sub for Tuple {
     type Output = Self;
 
     fn sub(self, other: Self) -> Self {
         Self {
+            x: self.x - other.x,
+            y: self.y - other.y,
+            z: self.z - other.z,
+            w: self.w - other.w,
+        }
+    }
+}
+
+impl SubAssign for Tuple {
+    fn sub_assign(&mut self, other: Self) {
+        *self = Self {
             x: self.x - other.x,
             y: self.y - other.y,
             z: self.z - other.z,
