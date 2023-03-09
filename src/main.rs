@@ -1,5 +1,6 @@
 use crate::tuple::Tuple;
 
+mod canvas;
 mod color;
 mod tuple;
 
