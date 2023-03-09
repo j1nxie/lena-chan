@@ -1,5 +1,6 @@
 use crate::tuple::Tuple;
 
+mod color;
 mod tuple;
 
 #[derive(Debug)]
