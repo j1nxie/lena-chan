@@ -22,7 +22,7 @@ impl Color {
         Self { r, g, b }
     }
 
-    pub fn to_int(&self, max: u32) -> ColorInt {
+    pub fn to_int(self, max: u32) -> ColorInt {
         let r: u32;
         let g: u32;
         let b: u32;

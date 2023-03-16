@@ -38,7 +38,7 @@ impl Canvas {
 
             if i == self.width {
                 i = 0;
-                pixels.push_str("\n");
+                pixels.push('\n');
             }
         }
 
@@ -52,9 +52,9 @@ impl Canvas {
                 .collect::<Vec<&str>>()
                 .join("\n"),
         );
-        contents.push_str("\n");
+        contents.push('\n');
 
-        match f.write(&contents.as_bytes()) {
+        match f.write(contents.as_bytes()) {
             Ok(_) => Ok(()),
             Err(e) => panic!("error writing to file: {}", e),
         }
