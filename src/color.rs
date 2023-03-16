@@ -1,4 +1,5 @@
 use float_eq::{derive_float_eq, float_eq};
+use num_traits::identities::Zero;
 use std::f64::{self, EPSILON};
 use std::ops::{Add, AddAssign, Mul, Neg, Sub, SubAssign};
 
@@ -145,6 +146,20 @@ impl Mul<Color> for Color {
             g: self.g * other.g,
             b: self.b * other.b,
         }
+    }
+}
+
+impl Zero for Color {
+    fn zero() -> Self {
+        Self {
+            r: 0.0,
+            g: 0.0,
+            b: 0.0,
+        }
+    }
+
+    fn is_zero(&self) -> bool {
+        *self == Self::zero()
     }
 }
 
