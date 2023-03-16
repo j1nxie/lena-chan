@@ -1,6 +1,7 @@
 [package]
 name = "lena-chan"
 version = "0.1.0"
+authors = ["j1nxie"]
 edition = "2021"
 license = "MIT OR Apache-2.0"
 
@@ -8,3 +9,5 @@ license = "MIT OR Apache-2.0"
 
 [dependencies]
 float_eq = { version = "1.0.1", features = ["derive"] }
+ndarray = "0.15.6"
+num-traits = "0.2.15"
