@@ -20,6 +20,38 @@ impl Color {
     pub fn new(r: f64, g: f64, b: f64) -> Self {
         Self { r, g, b }
     }
+
+    pub fn to_int(&self, max: u32) -> ColorInt {
+        let r: u32;
+        let g: u32;
+        let b: u32;
+
+        if self.r >= 1.0 {
+            r = max;
+        } else if self.r < 0.0 {
+            r = 0;
+        } else {
+            r = (self.r * max as f64).ceil() as u32;
+        }
+
+        if self.g >= 1.0 {
+            g = max;
+        } else if self.g < 0.0 {
+            g = 0;
+        } else {
+            g = (self.g * max as f64).ceil() as u32;
+        }
+
+        if self.b >= 1.0 {
+            b = max;
+        } else if self.b < 0.0 {
+            b = 0;
+        } else {
+            b = (self.b * max as f64).ceil() as u32;
+        }
+
+        ColorInt { r, g, b }
+    }
 }
 
 impl PartialEq for Color {
@@ -114,6 +146,13 @@ impl Mul<Color> for Color {
             b: self.b * other.b,
         }
     }
+}
+
+#[derive(Clone, Copy, Debug)]
+pub struct ColorInt {
+    pub r: u32,
+    pub g: u32,
+    pub b: u32,
 }
 
 #[cfg(test)]
