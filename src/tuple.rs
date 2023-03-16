@@ -1,4 +1,4 @@
-use float_eq::{assert_float_eq, derive_float_eq, float_eq};
+use float_eq::{derive_float_eq, float_eq};
 use std::f64::{self, EPSILON};
 use std::ops::{Add, AddAssign, Div, Mul, Neg, Sub, SubAssign};
 
@@ -173,6 +173,7 @@ impl Div<f64> for Tuple {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use float_eq::assert_float_eq;
 
     #[test]
     fn test_point() {

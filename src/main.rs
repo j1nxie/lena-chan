@@ -1,5 +1,7 @@
 use crate::tuple::Tuple;
 
+mod canvas;
+mod color;
 mod tuple;
 
 #[derive(Debug)]
@@ -35,7 +37,7 @@ fn main() {
     };
 
     while projectile.position.y > 0.0 {
-        println!("current y position: {:.}", projectile.position.y);
+        println!("current y position: {}", projectile.position.y);
         projectile.tick(&environment);
     }
 }
