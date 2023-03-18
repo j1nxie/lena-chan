@@ -63,8 +63,8 @@ impl Canvas {
 impl std::ops::Index<(usize, usize)> for Canvas {
     type Output = Color;
 
-    fn index(&self, (row, col): (usize, usize)) -> &Color {
-        match self.pixels.get(row + col * self.width as usize) {
+    fn index(&self, (x, y): (usize, usize)) -> &Color {
+        match self.pixels.get(x + y * self.width as usize) {
             Some(t) => t,
             None => panic!(
                 "out of bounds! tried to get index of ({}, {}) for canvas size ({}, {})",
@@ -75,8 +75,8 @@ impl std::ops::Index<(usize, usize)> for Canvas {
 }
 
 impl std::ops::IndexMut<(usize, usize)> for Canvas {
-    fn index_mut(&mut self, (row, col): (usize, usize)) -> &mut Color {
-        match self.pixels.get_mut(row + col * self.width as usize) {
+    fn index_mut(&mut self, (x, y): (usize, usize)) -> &mut Color {
+        match self.pixels.get_mut(x + y * self.width as usize) {
             Some(t) => t,
             None => panic!(
                 "out of bounds! tried to get index of ({}, {}) for canvas size ({}, {})",
