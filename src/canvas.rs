@@ -96,14 +96,21 @@ mod tests {
 
     #[test]
     fn test_canvas() {
-        let c = Canvas::new(10, 20);
+        let mut c = Canvas::new(3, 3);
+        let black = Color::new(0.0, 0.0, 0.0);
+        let red = Color::new(1.0, 0.0, 0.0);
 
-        assert_eq!(c.width, 10);
-        assert_eq!(c.height, 20);
+        assert_eq!(c.width, 3);
+        assert_eq!(c.height, 3);
 
         for pixel in c.pixels.iter() {
-            assert_eq!(*pixel, Color::new(0.0, 0.0, 0.0));
+            assert_eq!(*pixel, black);
         }
+
+        c.pixels = vec![black, red, black, black, red, black, black, black, black];
+
+        assert_eq!(c[(1, 0)], red);
+        assert_eq!(c[(1, 1)], red);
     }
 
     #[test]
@@ -143,8 +150,11 @@ mod tests {
         let c3 = Color::new(-0.5, 0.0, 1.0);
 
         c.write_pixel(0, 0, c1);
+        c.write_pixel(1, 0, Color::new(0.0, 0.5, 0.5));
         c.write_pixel(2, 1, c2);
         c.write_pixel(4, 2, c3);
+
+        println!("{:?}", c.pixels);
 
         c.write_to_ppm(Path::new("test_write_ppm.ppm")).unwrap();
 
@@ -153,8 +163,6 @@ mod tests {
         let mut content = String::new();
         buf_reader.read_to_string(&mut content).unwrap();
 
-        assert_eq!(content, "P3\n5 3\n255\n255 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n0 0 0 0 0 0 0 128 0 0 0 0 0 0 0\n0 0 0 0 0 0 0 0 0 0 0 0 0 0 255\n");
-
-        fs::remove_file("test_write_ppm.ppm").unwrap();
+        assert_eq!(content, "P3\n5 3\n255\n255 0 0 0 128 128 0 0 0 0 0 0 0 0 0\n0 0 0 0 0 0 0 128 0 0 0 0 0 0 0\n0 0 0 0 0 0 0 0 0 0 0 0 0 0 255\n");
     }
 }
