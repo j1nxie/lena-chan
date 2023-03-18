@@ -3,17 +3,17 @@ use std::{fs::File, io::Write, path::Path};
 
 #[derive(Debug, Clone, PartialEq)]
 pub struct Canvas {
-    pub width: u32,
-    pub height: u32,
+    pub width: usize,
+    pub height: usize,
     pub pixels: Vec<Color>,
 }
 
 impl Canvas {
-    pub fn new(width: u32, height: u32) -> Self {
+    pub fn new(width: usize, height: usize) -> Self {
         Self {
             width,
             height,
-            pixels: vec![Color::new(0.0, 0.0, 0.0); (width * height) as usize],
+            pixels: vec![Color::new(0.0, 0.0, 0.0); width * height],
         }
     }
 
@@ -64,7 +64,7 @@ impl std::ops::Index<(usize, usize)> for Canvas {
     type Output = Color;
 
     fn index(&self, (x, y): (usize, usize)) -> &Color {
-        match self.pixels.get(x + y * self.width as usize) {
+        match self.pixels.get(x + y * self.width) {
             Some(t) => t,
             None => panic!(
                 "out of bounds! tried to get index of ({}, {}) for canvas size ({}, {})",
@@ -76,7 +76,7 @@ impl std::ops::Index<(usize, usize)> for Canvas {
 
 impl std::ops::IndexMut<(usize, usize)> for Canvas {
     fn index_mut(&mut self, (x, y): (usize, usize)) -> &mut Color {
-        match self.pixels.get_mut(x + y * self.width as usize) {
+        match self.pixels.get_mut(x + y * self.width) {
             Some(t) => t,
             None => panic!(
                 "out of bounds! tried to get index of ({}, {}) for canvas size ({}, {})",
