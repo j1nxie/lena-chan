@@ -67,8 +67,8 @@ impl std::ops::Index<(usize, usize)> for Canvas {
         match self.pixels.get(row + col * self.width as usize) {
             Some(t) => t,
             None => panic!(
-                "out of bounds! tried to get index of ({}, {}) for canvas size ({} {})",
-                row, col, self.width, self.height
+                "out of bounds! tried to get index of ({}, {}) for canvas size ({}, {})",
+                x, y, self.width, self.height
             ),
         }
     }
@@ -79,8 +79,8 @@ impl std::ops::IndexMut<(usize, usize)> for Canvas {
         match self.pixels.get_mut(row + col * self.width as usize) {
             Some(t) => t,
             None => panic!(
-                "out of bounds! tried to get index of ({}, {}) for canvas size ({} {})",
-                row, col, self.width, self.height
+                "out of bounds! tried to get index of ({}, {}) for canvas size ({}, {})",
+                x, y, self.width, self.height
             ),
         }
     }
