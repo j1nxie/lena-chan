@@ -40,6 +40,7 @@ impl Matrix {
                 }
             }
         }
+
         Self {
             width: self.width,
             height: self.height,
