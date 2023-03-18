@@ -1,12 +1,11 @@
 use crate::color::Color;
-use ndarray::Array2;
 use std::{fs::File, io::Write, path::Path};
 
 #[derive(Debug, Clone, PartialEq)]
 pub struct Canvas {
     pub width: u32,
     pub height: u32,
-    pub pixels: Array2<Color>,
+    pub pixels: Vec<Color>,
 }
 
 impl Canvas {
@@ -14,12 +13,12 @@ impl Canvas {
         Self {
             width,
             height,
-            pixels: Array2::<Color>::zeros((width as usize, height as usize)),
+            pixels: vec![Color::new(0.0, 0.0, 0.0); (width * height) as usize],
         }
     }
 
     pub fn write_pixel(&mut self, x: usize, y: usize, color: Color) -> Self {
-        self.pixels[[x, y]] = color;
+        self[y][x] = color;
         self.to_owned()
     }
 
@@ -61,6 +60,24 @@ impl Canvas {
     }
 }
 
+impl std::ops::Index<usize> for Canvas {
+    type Output = [Color];
+
+    fn index(&self, row: usize) -> &[Color] {
+        let start = row * (self.width as usize);
+
+        &self.pixels[start..start + (self.width as usize)]
+    }
+}
+
+impl std::ops::IndexMut<usize> for Canvas {
+    fn index_mut(&mut self, row: usize) -> &mut [Color] {
+        let start = row * (self.width as usize);
+
+        &mut self.pixels[start..start + (self.width as usize)]
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -90,8 +107,8 @@ mod tests {
         c.write_pixel(3, 4, p1);
         c.write_pixel(6, 9, p2);
 
-        assert_eq!(c.pixels[[3, 4]], p1);
-        assert_eq!(c.pixels[[6, 9]], p2);
+        assert_eq!(c[3][4], p1);
+        assert_eq!(c[6][9], p2);
     }
 
     #[test]
