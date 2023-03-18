@@ -17,14 +17,8 @@ impl Canvas {
         }
     }
 
-    // use this for sanity, trust me.
-    // you should never need to get an individual pixel though.
-    pub fn get_pixel(&self, x: usize, y: usize) -> Color {
-        self[y][x]
-    }
-
     pub fn write_pixel(&mut self, x: usize, y: usize, color: Color) -> Self {
-        self[y][x] = color;
+        self[(x, y)] = color;
         self.to_owned()
     }
 
@@ -66,21 +60,29 @@ impl Canvas {
     }
 }
 
-impl std::ops::Index<usize> for Canvas {
-    type Output = [Color];
+impl std::ops::Index<(usize, usize)> for Canvas {
+    type Output = Color;
 
-    fn index(&self, row: usize) -> &[Color] {
-        let start = row * (self.width as usize);
-
-        &self.pixels[start..start + (self.width as usize)]
+    fn index(&self, (row, col): (usize, usize)) -> &Color {
+        match self.pixels.get(row + col * self.width as usize) {
+            Some(t) => t,
+            None => panic!(
+                "out of bounds! tried to get index of ({}, {}) for canvas size ({} {})",
+                row, col, self.width, self.height
+            ),
+        }
     }
 }
 
-impl std::ops::IndexMut<usize> for Canvas {
-    fn index_mut(&mut self, row: usize) -> &mut [Color] {
-        let start = row * (self.width as usize);
-
-        &mut self.pixels[start..start + (self.width as usize)]
+impl std::ops::IndexMut<(usize, usize)> for Canvas {
+    fn index_mut(&mut self, (row, col): (usize, usize)) -> &mut Color {
+        match self.pixels.get_mut(row + col * self.width as usize) {
+            Some(t) => t,
+            None => panic!(
+                "out of bounds! tried to get index of ({}, {}) for canvas size ({} {})",
+                row, col, self.width, self.height
+            ),
+        }
     }
 }
 
@@ -113,8 +115,8 @@ mod tests {
         c.write_pixel(3, 4, p1);
         c.write_pixel(6, 9, p2);
 
-        assert_eq!(c.get_pixel(3, 4), p1);
-        assert_eq!(c.get_pixel(6, 9), p2);
+        assert_eq!(c[(3, 4)], p1);
+        assert_eq!(c[(6, 9)], p2);
     }
 
     #[test]
