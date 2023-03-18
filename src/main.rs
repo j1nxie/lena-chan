@@ -1,4 +1,5 @@
-use crate::tuple::Tuple;
+use crate::{canvas::Canvas, color::Color, tuple::Tuple};
+use std::path::Path;
 
 mod canvas;
 mod color;
@@ -28,7 +29,7 @@ struct Environment {
 fn main() {
     let mut projectile = Projectile {
         position: Tuple::point(0.0, 1.0, 0.0),
-        velocity: Tuple::vector(1.0, 1.0, 0.0).normalize(),
+        velocity: Tuple::vector(1.0, 1.8, 0.0).normalize() * 11.25,
     };
 
     let environment = Environment {
@@ -36,8 +37,24 @@ fn main() {
         wind: Tuple::vector(-0.01, 0.0, 0.0),
     };
 
+    let mut c = Canvas::new(900, 550);
+
     while projectile.position.y > 0.0 {
-        println!("current y position: {}", projectile.position.y);
         projectile.tick(&environment);
+        let color = Color::new(1.0, 0.0, 0.0);
+        println!(
+            "drawing at coord: ({}, {})",
+            projectile.position.x, projectile.position.y
+        );
+
+        if projectile.position.y > 0.0 {
+            c.write_pixel(
+                projectile.position.x as usize,
+                (c.height - projectile.position.y as u32) as usize,
+                color,
+            );
+        }
     }
+
+    c.write_to_ppm(Path::new("test.ppm")).unwrap();
 }
