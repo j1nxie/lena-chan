@@ -47,6 +47,21 @@ impl Matrix {
             data,
         }
     }
+
+    pub fn transpose(&self) -> Self {
+        let mut data = vec![];
+        for y in 0..self.height {
+            for x in 0..self.width {
+                data.push(self[(x, y)]);
+            }
+        }
+
+        Self {
+            width: self.width,
+            height: self.height,
+            data,
+        }
+    }
 }
 
 impl PartialEq for Matrix {
@@ -367,5 +382,32 @@ mod tests {
         let tuple = Tuple::new(1.0, 2.0, 3.0, 4.0);
 
         assert_eq!(matrix * tuple, tuple);
+    }
+
+    #[test]
+    fn test_transpose_matrix() {
+        let matrix = Matrix::new(
+            4,
+            4,
+            vec![
+                0.0, 9.0, 3.0, 0.0, 9.0, 8.0, 0.0, 8.0, 1.0, 8.0, 5.0, 3.0, 0.0, 0.0, 5.0, 8.0,
+            ],
+        );
+        let transposed = Matrix::new(
+            4,
+            4,
+            vec![
+                0.0, 9.0, 1.0, 0.0, 9.0, 8.0, 8.0, 0.0, 3.0, 0.0, 5.0, 5.0, 0.0, 8.0, 3.0, 8.0,
+            ],
+        );
+
+        assert_eq!(matrix.transpose(), transposed);
+    }
+
+    #[test]
+    fn test_transpose_identity_matrix() {
+        let matrix = Matrix::size(2, 2).identity();
+
+        assert_eq!(matrix.transpose(), matrix);
     }
 }
