@@ -28,6 +28,24 @@ impl Matrix {
             data: vec![0.0; width * height],
         }
     }
+
+    pub fn identity(&self) -> Self {
+        let mut data = vec![];
+        for x in 0..self.width {
+            for y in 0..self.height {
+                if x == y {
+                    data.push(1.0);
+                } else {
+                    data.push(0.0);
+                }
+            }
+        }
+        Self {
+            width: self.width,
+            height: self.height,
+            data,
+        }
+    }
 }
 
 impl PartialEq for Matrix {
@@ -326,5 +344,27 @@ mod tests {
 
         assert_eq!(m1, m2);
         assert_ne!(m1, m3);
+    }
+
+    #[test]
+    fn test_mul_identity_matrix() {
+        let matrix = Matrix::new(
+            4,
+            4,
+            vec![
+                0.0, 1.0, 2.0, 4.0, 1.0, 2.0, 4.0, 8.0, 2.0, 4.0, 8.0, 17.0, 4.0, 8.0, 16.0, 32.0,
+            ],
+        );
+        let identity = matrix.identity();
+
+        assert_eq!(matrix.clone() * identity, matrix);
+    }
+
+    #[test]
+    fn test_mul_identity_matrix_tuple() {
+        let matrix = Matrix::size(4, 4).identity();
+        let tuple = Tuple::new(1.0, 2.0, 3.0, 4.0);
+
+        assert_eq!(matrix * tuple, tuple);
     }
 }
