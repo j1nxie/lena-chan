@@ -1,5 +1,7 @@
 use crate::tuple::Tuple;
+use float_eq::float_eq;
 use std::{
+    f64::EPSILON,
     ops::{Add, Index, IndexMut, Mul, Sub},
 };
 
@@ -173,5 +175,156 @@ impl IndexMut<(usize, usize)> for Matrix {
                 row, col, self.width, self.height
             ),
         }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_new_matrix() {
+        let matrix = Matrix::size(2, 2);
+
+        assert_eq!(matrix.data, vec![0.0; 4])
+    }
+
+    #[test]
+    fn test_index_matrix() {
+        let matrix = Matrix::new(2, 2, vec![1.0, 2.0, 3.0, 4.0]);
+
+        assert_eq!(matrix[(0, 0)], 1.0);
+        assert_eq!(matrix[(0, 1)], 2.0);
+        assert_eq!(matrix[(1, 0)], 3.0);
+        assert_eq!(matrix[(1, 1)], 4.0);
+    }
+
+    #[test]
+    fn test_add_matrix_ok() {
+        let matrix = Matrix::new(2, 2, vec![1.0; 4]);
+        let other = Matrix::new(2, 2, vec![1.0; 4]);
+        let result = Matrix::new(2, 2, vec![2.0; 4]);
+
+        assert_eq!(matrix + other, result);
+    }
+
+    #[test]
+    #[should_panic(expected = "cannot add two matrices of different dimensions")]
+    fn test_add_matrix_fail() {
+        let matrix = Matrix::size(2, 2);
+        let other = Matrix::size(3, 2);
+
+        let _ = matrix + other;
+    }
+
+    #[test]
+    fn test_sub_matrix_ok() {
+        let matrix = Matrix::new(2, 2, vec![1.0; 4]);
+        let other = Matrix::new(2, 2, vec![1.0; 4]);
+        let result = Matrix::new(2, 2, vec![0.0; 4]);
+
+        assert_eq!(matrix - other, result);
+    }
+
+    #[test]
+    #[should_panic(expected = "cannot subtract two matrices of different dimensions")]
+    fn test_sub_matrix_fail() {
+        let matrix = Matrix::size(2, 2);
+        let other = Matrix::size(3, 2);
+
+        let _ = matrix - other;
+    }
+
+    #[test]
+    fn test_mul_matrix_scalar() {
+        let matrix = Matrix::new(2, 2, vec![1.0, 1.0, 1.0, 1.0]);
+        let scalar = 4.0;
+        let result = Matrix::new(2, 2, vec![4.0, 4.0, 4.0, 4.0]);
+
+        assert_eq!(matrix * scalar, result);
+    }
+
+    #[test]
+    fn test_mul_matrices_ok() {
+        let matrix = Matrix::new(
+            4,
+            4,
+            vec![
+                1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 8.0, 7.0, 6.0, 5.0, 4.0, 3.0, 2.0,
+            ],
+        );
+
+        let other = Matrix::new(
+            4,
+            4,
+            vec![
+                -2.0, 1.0, 2.0, 3.0, 3.0, 2.0, 1.0, -1.0, 4.0, 3.0, 6.0, 5.0, 1.0, 2.0, 7.0, 8.0,
+            ],
+        );
+
+        let result = Matrix::new(
+            4,
+            4,
+            vec![
+                20.0, 22.0, 50.0, 48.0, 44.0, 54.0, 114.0, 108.0, 40.0, 58.0, 110.0, 102.0, 16.0,
+                26.0, 46.0, 42.0,
+            ],
+        );
+
+        assert_eq!((matrix * other).data, result.data);
+    }
+
+    #[test]
+    #[should_panic(
+        expected = "number of columns in the first matrix should be equal to number of rows in the second matrix!"
+    )]
+    fn test_mul_matrices_fail() {
+        let matrix = Matrix::size(2, 2);
+        let other = Matrix::size(3, 2);
+
+        let _ = matrix * other;
+    }
+
+    #[test]
+    fn test_mul_matrix_tuple_ok() {
+        let matrix = Matrix::new(
+            4,
+            4,
+            vec![
+                1.0, 2.0, 3.0, 4.0, 2.0, 4.0, 4.0, 2.0, 8.0, 6.0, 4.0, 1.0, 0.0, 0.0, 0.0, 1.0,
+            ],
+        );
+        let tuple = Tuple::new(1.0, 2.0, 3.0, 1.0);
+        let result = Tuple::new(18.0, 24.0, 33.0, 1.0);
+
+        assert_eq!(matrix * tuple, result);
+    }
+
+    #[test]
+    fn test_cmp_matrix() {
+        let m1 = Matrix::new(
+            4,
+            4,
+            vec![
+                1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 8.0, 7.0, 6.0, 5.0, 4.0, 3.0, 2.0,
+            ],
+        );
+        let m2 = Matrix::new(
+            4,
+            4,
+            vec![
+                1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 8.0, 7.0, 6.0, 5.0, 4.0, 3.0, 2.0,
+            ],
+        );
+        let m3 = Matrix::new(
+            4,
+            4,
+            vec![
+                2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 8.0, 7.0, 6.0, 5.0, 4.0, 3.0, 2.0, 1.0,
+            ],
+        );
+
+        assert_eq!(m1, m2);
+        assert_ne!(m1, m3);
     }
 }
