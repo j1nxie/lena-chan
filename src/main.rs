@@ -3,6 +3,7 @@ use std::path::Path;
 
 mod canvas;
 mod color;
+mod matrix;
 mod tuple;
 
 #[derive(Debug)]

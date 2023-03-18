@@ -17,9 +17,9 @@ impl Canvas {
         }
     }
 
-    pub fn write_pixel(&mut self, x: usize, y: usize, color: Color) -> Self {
+    pub fn write_pixel(&mut self, x: usize, y: usize, color: Color) -> &Self {
         self[(x, y)] = color;
-        self.to_owned()
+        self
     }
 
     pub fn write_to_ppm(&self, path: &Path) -> std::io::Result<()> {
