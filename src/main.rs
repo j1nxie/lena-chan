@@ -43,15 +43,15 @@ fn main() {
     while projectile.position.y > 0.0 {
         projectile.tick(&environment);
         let color = Color::new(1.0, 0.0, 0.0);
-        println!(
-            "drawing at coord: ({}, {})",
-            projectile.position.x, projectile.position.y
-        );
 
         if projectile.position.y > 0.0 {
+            println!(
+                "drawing at coord: ({}, {})",
+                projectile.position.x as usize, projectile.position.y as usize,
+            );
             c.write_pixel(
                 projectile.position.x as usize,
-                (c.height - projectile.position.y as u32) as usize,
+                projectile.position.y as usize,
                 color,
             );
         }
