@@ -164,5 +164,7 @@ mod tests {
         buf_reader.read_to_string(&mut content).unwrap();
 
         assert_eq!(content, "P3\n5 3\n255\n255 0 0 0 128 128 0 0 0 0 0 0 0 0 0\n0 0 0 0 0 0 0 128 0 0 0 0 0 0 0\n0 0 0 0 0 0 0 0 0 0 0 0 0 0 255\n");
+
+        fs::remove_file("test_write_ppm.ppm").unwrap();
     }
 }
