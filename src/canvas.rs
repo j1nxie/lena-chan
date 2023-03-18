@@ -17,6 +17,12 @@ impl Canvas {
         }
     }
 
+    // use this for sanity, trust me.
+    // you should never need to get an individual pixel though.
+    pub fn get_pixel(&self, x: usize, y: usize) -> Color {
+        self[y][x]
+    }
+
     pub fn write_pixel(&mut self, x: usize, y: usize, color: Color) -> Self {
         self[y][x] = color;
         self.to_owned()
@@ -107,8 +113,8 @@ mod tests {
         c.write_pixel(3, 4, p1);
         c.write_pixel(6, 9, p2);
 
-        assert_eq!(c[3][4], p1);
-        assert_eq!(c[6][9], p2);
+        assert_eq!(c.get_pixel(3, 4), p1);
+        assert_eq!(c.get_pixel(6, 9), p2);
     }
 
     #[test]
