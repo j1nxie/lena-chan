@@ -1,5 +1,5 @@
 use crate::{canvas::Canvas, color::Color, tuple::Tuple};
-use std::path::Path;
+use std::{fs, path::Path, process::Command};
 
 mod canvas;
 mod color;
@@ -58,4 +58,12 @@ fn main() {
     }
 
     c.write_to_ppm(Path::new("test.ppm")).unwrap();
+
+    Command::new("magick")
+        .arg("display")
+        .arg("test.ppm")
+        .status()
+        .expect("process failed to start");
+
+    fs::remove_file("test.ppm").unwrap();
 }
