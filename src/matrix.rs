@@ -62,6 +62,14 @@ impl Matrix {
             data,
         }
     }
+
+    pub fn determinant(&self) -> f64 {
+        if self.width == 2 && self.height == 2 {
+            self[(0, 0)] * self[(1, 1)] - self[(0, 1)] * self[(1, 0)]
+        } else {
+            todo!()
+        }
+    }
 }
 
 impl PartialEq for Matrix {
@@ -410,4 +418,13 @@ mod tests {
 
         assert_eq!(matrix.transpose(), matrix);
     }
+
+    #[test]
+    fn test_det_matrix_2x2() {
+        let matrix = Matrix::new(2, 2, vec![1.0, 5.0, -3.0, 2.0]);
+        let determinant = 17.0;
+
+        assert_eq!(matrix.determinant(), determinant);
+    }
+
 }
