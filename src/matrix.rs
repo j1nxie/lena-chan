@@ -89,6 +89,9 @@ impl Matrix {
         }
     }
 
+    pub fn minor(&self, row: usize, col: usize) -> f64 {
+        self.submatrix(row, col).determinant()
+    }
 }
 
 impl PartialEq for Matrix {
@@ -466,5 +469,13 @@ mod tests {
         let submatrix = Matrix::new(3, 3, vec![-6.0, 1.0, 6.0, -8.0, 8.0, 6.0, -7.0, -1.0, 1.0]);
 
         assert_eq!(matrix.submatrix(2, 1), submatrix);
+    }
+
+    #[test]
+    fn test_minor_3x3() {
+        let matrix = Matrix::new(3, 3, vec![3.0, 5.0, 0.0, 2.0, -1.0, -7.0, 6.0, -1.0, 5.0]);
+        let submatrix = matrix.submatrix(1, 0);
+
+        assert_eq!(matrix.minor(1, 0), submatrix.determinant())
     }
 }
