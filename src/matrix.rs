@@ -92,6 +92,14 @@ impl Matrix {
     pub fn minor(&self, row: usize, col: usize) -> f64 {
         self.submatrix(row, col).determinant()
     }
+
+    pub fn cofactor(&self, row: usize, col: usize) -> f64 {
+        if row + col % 2 != 0 {
+            return -self.minor(row, col);
+        }
+
+        self.minor(row, col)
+    }
 }
 
 impl PartialEq for Matrix {
@@ -477,5 +485,13 @@ mod tests {
         let submatrix = matrix.submatrix(1, 0);
 
         assert_eq!(matrix.minor(1, 0), submatrix.determinant())
+    }
+
+    #[test]
+    fn test_cofactor() {
+        let matrix = Matrix::new(3, 3, vec![3.0, 5.0, 0.0, 2.0, -1.0, -7.0, 6.0, -1.0, 5.0]);
+
+        assert_eq!(matrix.minor(0, 0), matrix.cofactor(0, 0));
+        assert_eq!(matrix.minor(1, 0), -matrix.cofactor(1, 0));
     }
 }
