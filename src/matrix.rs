@@ -70,6 +70,25 @@ impl Matrix {
             todo!()
         }
     }
+
+    pub fn submatrix(&self, row: usize, col: usize) -> Self {
+        let mut data = self.data.clone();
+
+        for (i, x) in (0..self.height).enumerate() {
+            data.remove(col + self.width * x - i);
+        }
+
+        for (i, y) in (0..self.width - 1).enumerate() {
+            data.remove(row * (self.width - 1) + y - i);
+        }
+
+        Self {
+            width: self.width - 1,
+            height: self.height - 1,
+            data: data.to_vec(),
+        }
+    }
+
 }
 
 impl PartialEq for Matrix {
@@ -427,4 +446,25 @@ mod tests {
         assert_eq!(matrix.determinant(), determinant);
     }
 
+    #[test]
+    fn test_submatrix_3x3() {
+        let matrix = Matrix::new(3, 3, vec![1.0, 5.0, 0.0, -3.0, 2.0, -7.0, 0.0, 6.0, -3.0]);
+        let submatrix = Matrix::new(2, 2, vec![-3.0, 2.0, 0.0, 6.0]);
+
+        assert_eq!(matrix.submatrix(0, 2), submatrix);
+    }
+
+    #[test]
+    fn test_submatrix_4x4() {
+        let matrix = Matrix::new(
+            4,
+            4,
+            vec![
+                -6.0, 1.0, 1.0, 6.0, -8.0, 5.0, 8.0, 6.0, -1.0, 0.0, 8.0, 2.0, -7.0, 1.0, -1.0, 1.0,
+            ],
+        );
+        let submatrix = Matrix::new(3, 3, vec![-6.0, 1.0, 6.0, -8.0, 8.0, 6.0, -7.0, -1.0, 1.0]);
+
+        assert_eq!(matrix.submatrix(2, 1), submatrix);
+    }
 }
