@@ -64,10 +64,19 @@ impl Matrix {
     }
 
     pub fn determinant(&self) -> f64 {
-        if self.width == 2 && self.height == 2 {
+        if self.width != self.height {
+            panic!("cannot calculate determinant for non-square matrices");
+        }
+
+        if self.width == 2 {
             self[(0, 0)] * self[(1, 1)] - self[(0, 1)] * self[(1, 0)]
         } else {
-            todo!()
+            let mut determinant = 0.0;
+            for x in 0..self.width {
+                determinant = determinant + self[(0, x)] * self.cofactor(0, x)
+            }
+
+            return determinant;
         }
     }
 
@@ -455,6 +464,42 @@ mod tests {
         let determinant = 17.0;
 
         assert_eq!(matrix.determinant(), determinant);
+    }
+
+    #[test]
+    fn test_det_matrix_3x3() {
+        let matrix = Matrix::new(3, 3, vec![1.0, 2.0, 6.0, -5.0, 8.0, -4.0, 2.0, 6.0, 4.0]);
+
+        assert_eq!(matrix.cofactor(0, 0), 56.0);
+        assert_eq!(matrix.cofactor(0, 1), 12.0);
+        assert_eq!(matrix.cofactor(0, 2), -46.0);
+        assert_eq!(matrix.determinant(), -196.0);
+    }
+
+    #[test]
+    fn test_det_matrix_4x4() {
+        let matrix = Matrix::new(
+            4,
+            4,
+            vec![
+                -2.0, -8.0, 3.0, 5.0, -3.0, 1.0, 7.0, 3.0, 1.0, 2.0, -9.0, 6.0, -6.0, 7.0, 7.0,
+                -9.0,
+            ],
+        );
+
+        assert_eq!(matrix.cofactor(0, 0), 690.0);
+        assert_eq!(matrix.cofactor(0, 1), 447.0);
+        assert_eq!(matrix.cofactor(0, 2), 210.0);
+        assert_eq!(matrix.cofactor(0, 3), 51.0);
+        assert_eq!(matrix.determinant(), -4071.0);
+    }
+
+    #[test]
+    #[should_panic(expected = "cannot calculate determinant for non-square matrices")]
+    fn test_det_matrix_nonsq() {
+        let matrix = Matrix::size(3, 4);
+
+        matrix.determinant();
     }
 
     #[test]
