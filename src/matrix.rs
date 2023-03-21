@@ -557,4 +557,18 @@ mod tests {
         assert_eq!(matrix.determinant(), -2120.0);
         assert!(matrix.invertible());
     }
+
+    #[test]
+    fn test_invertible_fail() {
+        let matrix = Matrix::new(
+            4,
+            4,
+            vec![
+                -4.0, 2.0, -2.0, -3.0, 9.0, 6.0, 2.0, 6.0, 0.0, -5.0, 1.0, -5.0, 0.0, 0.0, 0.0, 0.0,
+            ],
+        );
+
+        assert_eq!(matrix.determinant(), 0.0);
+        assert!(!matrix.invertible());
+    }
 }
