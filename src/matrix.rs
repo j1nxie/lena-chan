@@ -109,6 +109,10 @@ impl Matrix {
 
         self.minor(row, col)
     }
+
+    pub fn invertible(&self) -> bool {
+        self.determinant() != 0.0
+    }
 }
 
 impl PartialEq for Matrix {
@@ -538,5 +542,19 @@ mod tests {
 
         assert_eq!(matrix.minor(0, 0), matrix.cofactor(0, 0));
         assert_eq!(matrix.minor(1, 0), -matrix.cofactor(1, 0));
+    }
+
+    #[test]
+    fn test_invertible() {
+        let matrix = Matrix::new(
+            4,
+            4,
+            vec![
+                6.0, 4.0, 4.0, 4.0, 5.0, 5.0, 7.0, 6.0, 4.0, -9.0, 3.0, -7.0, 9.0, 1.0, 7.0, -6.0,
+            ],
+        );
+
+        assert_eq!(matrix.determinant(), -2120.0);
+        assert!(matrix.invertible());
     }
 }
