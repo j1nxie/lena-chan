@@ -662,4 +662,31 @@ mod tests {
             )
         )
     }
+
+    #[test]
+    fn test_mul_product_with_inverse() {
+        let a = Matrix::new(
+            4,
+            4,
+            vec![
+                3.0, -9.0, 7.0, 3.0, 3.0, -8.0, 2.0, -9.0, -4.0, 4.0, 4.0, 1.0, -6.0, 5.0, -1.0,
+                1.0,
+            ],
+        );
+
+        let b = Matrix::new(
+            4,
+            4,
+            vec![
+                8.0, 2.0, 2.0, 2.0, 3.0, -1.0, 7.0, 0.0, 7.0, 0.0, 5.0, 4.0, 6.0, -2.0, 0.0, 5.0,
+            ],
+        );
+
+        let c = a.clone() * b.clone();
+        let result = c * b.inverse();
+
+        eprintln!("{}", a == result);
+
+        assert_eq!(a, result);
+    }
 }
