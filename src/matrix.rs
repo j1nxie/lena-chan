@@ -113,6 +113,21 @@ impl Matrix {
     pub fn is_invertible(&self) -> bool {
         self.determinant() != 0.0
     }
+
+    pub fn inverse(&self) -> Matrix {
+        if !self.is_invertible() {
+            panic!("cannot invert matrices with determinant of 0")
+        }
+
+        let mut inverse = Matrix::size(self.width, self.height);
+        for row in 0..self.width {
+            for col in 0..self.width {
+                let cofactor = self.cofactor(row, col);
+                inverse[(col, row)] = (cofactor / self.determinant() * 100000.0).round() / 100000.0;
+            }
+        }
+        inverse
+    }
 }
 
 impl PartialEq for Matrix {
@@ -572,4 +587,56 @@ mod tests {
         assert!(!matrix.is_invertible());
     }
 
+    #[test]
+    fn test_invert_matrix() {
+        let m1 = Matrix::new(
+            4,
+            4,
+            vec![
+                -5.0, 2.0, 6.0, -8.0, 1.0, -5.0, 1.0, 8.0, 7.0, 7.0, -6.0, -7.0, 1.0, -3.0, 7.0,
+                4.0,
+            ],
+        );
+
+        let b1 = m1.inverse();
+
+        assert_eq!(m1.determinant(), 532.0);
+        assert_eq!(m1.cofactor(2, 3), -160.0);
+        assert_eq!(b1[(3, 2)], -0.30075);
+        assert_eq!(m1.cofactor(3, 2), 105.0);
+        assert_eq!(b1[(2, 3)], 0.19737);
+        assert_eq!(
+            b1,
+            Matrix::new(
+                4,
+                4,
+                vec![
+                    0.21805, 0.45113, 0.24060, -0.04511, -0.80827, -1.45677, -0.44361, 0.52068,
+                    -0.07895, -0.22368, -0.05263, 0.19737, -0.52256, -0.81391, -0.30075, 0.30639
+                ]
+            )
+        );
+
+        let m2 = Matrix::new(
+            4,
+            4,
+            vec![
+                8.0, -5.0, 9.0, 2.0, 7.0, 5.0, 6.0, 1.0, -6.0, 0.0, 9.0, 6.0, -3.0, 0.0, -9.0, -4.0,
+            ],
+        );
+
+        let b2 = m2.inverse();
+
+        assert_eq!(
+            b2,
+            Matrix::new(
+                4,
+                4,
+                vec![
+                    -0.15385, -0.15385, -0.28205, -0.53846, -0.07692, 0.12308, 0.02564, 0.03077,
+                    0.35897, 0.35897, 0.43590, 0.92308, -0.69231, -0.69231, -0.76923, -1.92308
+                ]
+            )
+        )
+    }
 }
