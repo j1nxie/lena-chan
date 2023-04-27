@@ -4,6 +4,7 @@ use std::{fs, path::Path, process::Command};
 mod canvas;
 mod color;
 mod matrix;
+mod transformation;
 mod tuple;
 
 #[derive(Debug)]
