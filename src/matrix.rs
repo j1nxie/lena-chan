@@ -103,7 +103,7 @@ impl Matrix {
     }
 
     pub fn cofactor(&self, row: usize, col: usize) -> f64 {
-        if row + col % 2 != 0 {
+        if (row + col) % 2 != 0 {
             return -self.minor(row, col);
         }
 
