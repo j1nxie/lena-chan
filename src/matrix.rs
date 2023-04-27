@@ -110,7 +110,7 @@ impl Matrix {
         self.minor(row, col)
     }
 
-    pub fn invertible(&self) -> bool {
+    pub fn is_invertible(&self) -> bool {
         self.determinant() != 0.0
     }
 }
@@ -545,7 +545,7 @@ mod tests {
     }
 
     #[test]
-    fn test_invertible() {
+    fn test_is_invertible() {
         let matrix = Matrix::new(
             4,
             4,
@@ -555,7 +555,7 @@ mod tests {
         );
 
         assert_eq!(matrix.determinant(), -2120.0);
-        assert!(matrix.invertible());
+        assert!(matrix.is_invertible());
     }
 
     #[test]
@@ -569,6 +569,7 @@ mod tests {
         );
 
         assert_eq!(matrix.determinant(), 0.0);
-        assert!(!matrix.invertible());
+        assert!(!matrix.is_invertible());
     }
+
 }
