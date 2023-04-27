@@ -133,7 +133,7 @@ impl Matrix {
         self.determinant() != 0.0
     }
 
-    pub fn inverse(&self) -> Matrix {
+    pub fn inverse(&self) -> Self {
         if !self.is_invertible() {
             panic!("cannot invert matrices with determinant of 0")
         }
