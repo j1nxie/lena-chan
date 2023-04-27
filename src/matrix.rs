@@ -48,6 +48,25 @@ impl Matrix {
         }
     }
 
+    pub fn identity_matrix(size: usize) -> Self {
+        let mut data = vec![];
+        for x in 0..size {
+            for y in 0..size {
+                if x == y {
+                    data.push(1.0);
+                } else {
+                    data.push(0.0);
+                }
+            }
+        }
+
+        Self {
+            width: size,
+            height: size,
+            data,
+        }
+    }
+
     pub fn transpose(&self) -> Self {
         let mut data = vec![];
         for y in 0..self.height {
