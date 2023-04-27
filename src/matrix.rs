@@ -685,8 +685,6 @@ mod tests {
         let c = a.clone() * b.clone();
         let result = c * b.inverse();
 
-        eprintln!("{}", a == result);
-
         assert_eq!(a, result);
     }
 }
