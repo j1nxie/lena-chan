@@ -73,10 +73,10 @@ impl Matrix {
         } else {
             let mut determinant = 0.0;
             for x in 0..self.width {
-                determinant = determinant + self[(0, x)] * self.cofactor(0, x)
+                determinant += self[(0, x)] * self.cofactor(0, x)
             }
 
-            return determinant;
+            determinant
         }
     }
 
