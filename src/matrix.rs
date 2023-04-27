@@ -156,6 +156,15 @@ impl Matrix {
 
         matrix
     }
+
+    pub fn scaling(x: f64, y: f64, z: f64) -> Self {
+        let mut matrix = Matrix::identity_matrix(4);
+        matrix[(0, 0)] = x;
+        matrix[(1, 1)] = y;
+        matrix[(2, 2)] = z;
+
+        matrix
+    }
 }
 
 impl PartialEq for Matrix {
@@ -739,5 +748,38 @@ mod tests {
         let v = Tuple::vector(-3.0, 4.0, 5.0);
 
         assert_eq!(transform * v, v);
+    }
+
+    #[test]
+    fn test_mul_scaling_matrix_point() {
+        let transform = Matrix::scaling(2.0, 3.0, 4.0);
+        let p = Tuple::point(-4.0, 6.0, 8.0);
+
+        assert_eq!(transform * p, Tuple::point(-8.0, 18.0, 32.0));
+    }
+
+    #[test]
+    fn test_mul_scaling_matrix_vector() {
+        let transform = Matrix::scaling(2.0, 3.0, 4.0);
+        let v = Tuple::vector(-4.0, 6.0, 8.0);
+
+        assert_eq!(transform * v, Tuple::vector(-8.0, 18.0, 32.0));
+    }
+
+    #[test]
+    fn test_mul_scaling_matrix_inverse() {
+        let transform = Matrix::scaling(2.0, 3.0, 4.0);
+        let inverse = transform.inverse();
+        let v = Tuple::vector(-4.0, 6.0, 8.0);
+
+        assert_eq!(inverse * v, Tuple::vector(-2.0, 2.0, 2.0));
+    }
+
+    #[test]
+    fn test_reflection() {
+        let transform = Matrix::scaling(-1.0, 1.0, 1.0);
+        let p = Tuple::point(2.0, 3.0, 4.0);
+
+        assert_eq!(transform * p, Tuple::point(-2.0, 3.0, 4.0));
     }
 }
