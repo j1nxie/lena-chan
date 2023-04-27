@@ -219,7 +219,7 @@ impl Mul<Matrix> for Matrix {
                 for k in 0..self.height {
                     sum += self[(i, k)] * other[(k, j)]
                 }
-                result.push(sum);
+                result.push(sum.round());
             }
         }
 
