@@ -3,29 +3,23 @@ use std::{fs::File, io::Write, path::Path};
 
 #[derive(Debug, Clone, PartialEq)]
 pub struct Canvas {
-    pub width: u32,
-    pub height: u32,
+    pub width: usize,
+    pub height: usize,
     pub pixels: Vec<Color>,
 }
 
 impl Canvas {
-    pub fn new(width: u32, height: u32) -> Self {
+    pub fn new(width: usize, height: usize) -> Self {
         Self {
             width,
             height,
-            pixels: vec![Color::new(0.0, 0.0, 0.0); (width * height) as usize],
+            pixels: vec![Color::new(0.0, 0.0, 0.0); width * height],
         }
     }
 
-    // use this for sanity, trust me.
-    // you should never need to get an individual pixel though.
-    pub fn get_pixel(&self, x: usize, y: usize) -> Color {
-        self[y][x]
-    }
-
-    pub fn write_pixel(&mut self, x: usize, y: usize, color: Color) -> Self {
-        self[y][x] = color;
-        self.to_owned()
+    pub fn write_pixel(&mut self, x: usize, y: usize, color: Color) -> &Self {
+        self[(x, y)] = color;
+        self
     }
 
     pub fn write_to_ppm(&self, path: &Path) -> std::io::Result<()> {
@@ -66,21 +60,29 @@ impl Canvas {
     }
 }
 
-impl std::ops::Index<usize> for Canvas {
-    type Output = [Color];
+impl std::ops::Index<(usize, usize)> for Canvas {
+    type Output = Color;
 
-    fn index(&self, row: usize) -> &[Color] {
-        let start = row * (self.width as usize);
-
-        &self.pixels[start..start + (self.width as usize)]
+    fn index(&self, (x, y): (usize, usize)) -> &Color {
+        match self.pixels.get(x + y * self.width) {
+            Some(t) => t,
+            None => panic!(
+                "out of bounds! tried to get index of ({}, {}) for canvas size ({}, {})",
+                x, y, self.width, self.height
+            ),
+        }
     }
 }
 
-impl std::ops::IndexMut<usize> for Canvas {
-    fn index_mut(&mut self, row: usize) -> &mut [Color] {
-        let start = row * (self.width as usize);
-
-        &mut self.pixels[start..start + (self.width as usize)]
+impl std::ops::IndexMut<(usize, usize)> for Canvas {
+    fn index_mut(&mut self, (x, y): (usize, usize)) -> &mut Color {
+        match self.pixels.get_mut(x + y * self.width) {
+            Some(t) => t,
+            None => panic!(
+                "out of bounds! tried to get index of ({}, {}) for canvas size ({}, {})",
+                x, y, self.width, self.height
+            ),
+        }
     }
 }
 
@@ -94,14 +96,21 @@ mod tests {
 
     #[test]
     fn test_canvas() {
-        let c = Canvas::new(10, 20);
+        let mut c = Canvas::new(3, 3);
+        let black = Color::new(0.0, 0.0, 0.0);
+        let red = Color::new(1.0, 0.0, 0.0);
 
-        assert_eq!(c.width, 10);
-        assert_eq!(c.height, 20);
+        assert_eq!(c.width, 3);
+        assert_eq!(c.height, 3);
 
         for pixel in c.pixels.iter() {
-            assert_eq!(*pixel, Color::new(0.0, 0.0, 0.0));
+            assert_eq!(*pixel, black);
         }
+
+        c.pixels = vec![black, red, black, black, red, black, black, black, black];
+
+        assert_eq!(c[(1, 0)], red);
+        assert_eq!(c[(1, 1)], red);
     }
 
     #[test]
@@ -113,8 +122,8 @@ mod tests {
         c.write_pixel(3, 4, p1);
         c.write_pixel(6, 9, p2);
 
-        assert_eq!(c.get_pixel(3, 4), p1);
-        assert_eq!(c.get_pixel(6, 9), p2);
+        assert_eq!(c[(3, 4)], p1);
+        assert_eq!(c[(6, 9)], p2);
     }
 
     #[test]
@@ -141,8 +150,11 @@ mod tests {
         let c3 = Color::new(-0.5, 0.0, 1.0);
 
         c.write_pixel(0, 0, c1);
+        c.write_pixel(1, 0, Color::new(0.0, 0.5, 0.5));
         c.write_pixel(2, 1, c2);
         c.write_pixel(4, 2, c3);
+
+        println!("{:?}", c.pixels);
 
         c.write_to_ppm(Path::new("test_write_ppm.ppm")).unwrap();
 
@@ -151,7 +163,7 @@ mod tests {
         let mut content = String::new();
         buf_reader.read_to_string(&mut content).unwrap();
 
-        assert_eq!(content, "P3\n5 3\n255\n255 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n0 0 0 0 0 0 0 128 0 0 0 0 0 0 0\n0 0 0 0 0 0 0 0 0 0 0 0 0 0 255\n");
+        assert_eq!(content, "P3\n5 3\n255\n255 0 0 0 128 128 0 0 0 0 0 0 0 0 0\n0 0 0 0 0 0 0 128 0 0 0 0 0 0 0\n0 0 0 0 0 0 0 0 0 0 0 0 0 0 255\n");
 
         fs::remove_file("test_write_ppm.ppm").unwrap();
     }
