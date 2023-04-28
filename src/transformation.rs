@@ -28,6 +28,26 @@ pub fn rotation_x(angle: f64) -> Matrix {
     matrix
 }
 
+pub fn rotation_y(angle: f64) -> Matrix {
+    let mut matrix = Matrix::identity_matrix(4);
+    matrix[(0, 0)] = angle.cos();
+    matrix[(0, 2)] = angle.sin();
+    matrix[(2, 0)] = -angle.sin();
+    matrix[(2, 2)] = angle.cos();
+
+    matrix
+}
+
+pub fn rotation_z(angle: f64) -> Matrix {
+    let mut matrix = Matrix::identity_matrix(4);
+    matrix[(0, 0)] = angle.cos();
+    matrix[(0, 1)] = -angle.sin();
+    matrix[(1, 0)] = angle.sin();
+    matrix[(1, 1)] = angle.cos();
+
+    matrix
+}
+
 #[cfg(test)]
 mod tests {
     use std::f64::consts::PI;
@@ -101,7 +121,11 @@ mod tests {
 
         assert_eq!(
             half_quarter * p,
-            Tuple::point(0.0, 2.0_f64.sqrt() / 2.0, 2.0_f64.sqrt() / 2.0)
+            Tuple::point(
+                0.0,
+                (2.0_f64.sqrt() / 2.0 * 100000.0).round() / 100000.0,
+                (2.0_f64.sqrt() / 2.0 * 100000.0).round() / 100000.0
+            )
         );
         assert_eq!(full_quarter * p, Tuple::point(0.0, 0.0, 1.0));
     }
@@ -114,7 +138,45 @@ mod tests {
 
         assert_eq!(
             inverse * p,
-            Tuple::point(0.0, 2.0_f64.sqrt() / 2.0, 2.0_f64.sqrt() / 2.0)
+            Tuple::point(
+                0.0,
+                (2.0_f64.sqrt() / 2.0 * 100000.0).round() / 100000.0,
+                -(2.0_f64.sqrt() / 2.0 * 100000.0).round() / 100000.0,
+            )
         );
+    }
+
+    #[test]
+    fn test_rotation_y() {
+        let p = Tuple::point(0.0, 0.0, 1.0);
+        let half_quarter = rotation_y(PI / 4.0);
+        let full_quarter = rotation_y(PI / 2.0);
+
+        assert_eq!(
+            half_quarter * p,
+            Tuple::point(
+                (2.0_f64.sqrt() / 2.0 * 100000.0).round() / 100000.0,
+                0.0,
+                (2.0_f64.sqrt() / 2.0 * 100000.0).round() / 100000.0,
+            )
+        );
+        assert_eq!(full_quarter * p, Tuple::point(1.0, 0.0, 0.0));
+    }
+
+    #[test]
+    fn test_rotation_z() {
+        let p = Tuple::point(0.0, 1.0, 0.0);
+        let half_quarter = rotation_z(PI / 4.0);
+        let full_quarter = rotation_z(PI / 2.0);
+
+        assert_eq!(
+            half_quarter * p,
+            Tuple::point(
+                -(2.0_f64.sqrt() / 2.0 * 100000.0).round() / 100000.0,
+                (2.0_f64.sqrt() / 2.0 * 100000.0).round() / 100000.0,
+                0.0,
+            )
+        );
+        assert_eq!(full_quarter * p, Tuple::point(-1.0, 0.0, 0.0));
     }
 }
