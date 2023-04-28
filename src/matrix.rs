@@ -158,7 +158,7 @@ impl PartialEq for Matrix {
         self.data
             .iter()
             .zip(other.data.iter())
-            .fold(true, |acc, (x, y)| acc && float_eq!(x, y, abs <= EPSILON))
+            .fold(true, |acc, (x, y)| acc && float_eq!(x, y, rmin <= 0.001))
     }
 }
 
