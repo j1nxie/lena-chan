@@ -1,9 +1,6 @@
 use crate::tuple::Tuple;
 use float_eq::float_eq;
-use std::{
-    f64::EPSILON,
-    ops::{Add, Index, IndexMut, Mul, Sub},
-};
+use std::ops::{Add, Index, IndexMut, Mul, Sub};
 
 #[derive(Clone, Debug)]
 pub struct Matrix {
