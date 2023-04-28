@@ -238,7 +238,7 @@ impl Mul<Matrix> for Matrix {
                 for k in 0..self.height {
                     sum += self[(i, k)] * other[(k, j)]
                 }
-                result.push((sum * 100.0).round() / 100.0);
+                result.push((sum * 100000.0).round() / 100000.0);
             }
         }
 
