@@ -1,9 +1,6 @@
 use crate::tuple::Tuple;
 use float_eq::float_eq;
-use std::{
-    f64::EPSILON,
-    ops::{Add, Index, IndexMut, Mul, Sub},
-};
+use std::ops::{Add, Index, IndexMut, Mul, Sub};
 
 #[derive(Clone, Debug)]
 pub struct Matrix {
@@ -44,6 +41,25 @@ impl Matrix {
         Self {
             width: self.width,
             height: self.height,
+            data,
+        }
+    }
+
+    pub fn identity_matrix(size: usize) -> Self {
+        let mut data = vec![];
+        for x in 0..size {
+            for y in 0..size {
+                if x == y {
+                    data.push(1.0);
+                } else {
+                    data.push(0.0);
+                }
+            }
+        }
+
+        Self {
+            width: size,
+            height: size,
             data,
         }
     }
@@ -114,7 +130,7 @@ impl Matrix {
         self.determinant() != 0.0
     }
 
-    pub fn inverse(&self) -> Matrix {
+    pub fn inverse(&self) -> Self {
         if !self.is_invertible() {
             panic!("cannot invert matrices with determinant of 0")
         }
@@ -139,7 +155,7 @@ impl PartialEq for Matrix {
         self.data
             .iter()
             .zip(other.data.iter())
-            .fold(true, |acc, (x, y)| acc && float_eq!(x, y, abs <= EPSILON))
+            .fold(true, |acc, (x, y)| acc && float_eq!(x, y, rmin <= 0.001))
     }
 }
 
@@ -219,7 +235,7 @@ impl Mul<Matrix> for Matrix {
                 for k in 0..self.height {
                     sum += self[(i, k)] * other[(k, j)]
                 }
-                result.push(sum.round());
+                result.push((sum * 100000.0).round() / 100000.0);
             }
         }
 
