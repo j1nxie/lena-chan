@@ -48,6 +48,18 @@ pub fn rotation_z(angle: f64) -> Matrix {
     matrix
 }
 
+pub fn shearing(xy: f64, xz: f64, yx: f64, yz: f64, zx: f64, zy: f64) -> Matrix {
+    let mut matrix = Matrix::identity_matrix(4);
+    matrix[(0, 1)] = xy;
+    matrix[(0, 2)] = xz;
+    matrix[(1, 0)] = yx;
+    matrix[(1, 2)] = yz;
+    matrix[(2, 0)] = zx;
+    matrix[(2, 1)] = zy;
+
+    matrix
+}
+
 #[cfg(test)]
 mod tests {
     use std::f64::consts::PI;
@@ -178,5 +190,53 @@ mod tests {
             )
         );
         assert_eq!(full_quarter * p, Tuple::point(-1.0, 0.0, 0.0));
+    }
+
+    #[test]
+    fn test_shearing_xy() {
+        let transform = shearing(1.0, 0.0, 0.0, 0.0, 0.0, 0.0);
+        let p = Tuple::point(2.0, 3.0, 4.0);
+
+        assert_eq!(transform * p, Tuple::point(5.0, 3.0, 4.0));
+    }
+
+    #[test]
+    fn test_shearing_xz() {
+        let transform = shearing(0.0, 1.0, 0.0, 0.0, 0.0, 0.0);
+        let p = Tuple::point(2.0, 3.0, 4.0);
+
+        assert_eq!(transform * p, Tuple::point(6.0, 3.0, 4.0));
+    }
+
+    #[test]
+    fn test_shearing_yx() {
+        let transform = shearing(0.0, 0.0, 1.0, 0.0, 0.0, 0.0);
+        let p = Tuple::point(2.0, 3.0, 4.0);
+
+        assert_eq!(transform * p, Tuple::point(2.0, 5.0, 4.0));
+    }
+
+    #[test]
+    fn test_shearing_yz() {
+        let transform = shearing(0.0, 0.0, 0.0, 1.0, 0.0, 0.0);
+        let p = Tuple::point(2.0, 3.0, 4.0);
+
+        assert_eq!(transform * p, Tuple::point(2.0, 7.0, 4.0));
+    }
+
+    #[test]
+    fn test_shearing_zx() {
+        let transform = shearing(0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
+        let p = Tuple::point(2.0, 3.0, 4.0);
+
+        assert_eq!(transform * p, Tuple::point(2.0, 3.0, 6.0));
+    }
+
+    #[test]
+    fn test_shearing_zy() {
+        let transform = shearing(0.0, 0.0, 0.0, 0.0, 0.0, 1.0);
+        let p = Tuple::point(2.0, 3.0, 4.0);
+
+        assert_eq!(transform * p, Tuple::point(2.0, 3.0, 7.0));
     }
 }
