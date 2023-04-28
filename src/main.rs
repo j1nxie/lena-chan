@@ -1,5 +1,7 @@
+use transformation::rotation_y;
+
 use crate::{canvas::Canvas, color::Color, tuple::Tuple};
-use std::{fs, path::Path, process::Command};
+use std::{f64::consts::PI, fs, path::Path, process::Command};
 
 mod canvas;
 mod color;
@@ -7,56 +9,37 @@ mod matrix;
 mod transformation;
 mod tuple;
 
-#[derive(Debug)]
-struct Projectile {
-    position: Tuple,
-    velocity: Tuple,
-}
-
-impl Projectile {
-    fn tick(&mut self, environment: &Environment) {
-        *self = Self {
-            position: self.position + self.velocity,
-            velocity: self.velocity + environment.gravity + environment.wind,
-        }
-    }
-}
-
-#[derive(Debug)]
-struct Environment {
-    gravity: Tuple,
-    wind: Tuple,
-}
-
 fn main() {
-    let mut projectile = Projectile {
-        position: Tuple::point(0.0, 1.0, 0.0),
-        velocity: Tuple::vector(1.0, 1.8, 0.0).normalize() * 11.25,
-    };
+    let mut c = Canvas::new(900, 900);
+    let radius = (3.0 / 8.0) * c.width as f64;
 
-    let environment = Environment {
-        gravity: Tuple::vector(0.0, -0.1, 0.0),
-        wind: Tuple::vector(-0.01, 0.0, 0.0),
-    };
+    let center = Tuple::point(c.width as f64 / 2.0, 0.0, c.height as f64 / 2.0);
+    let twelve = Tuple::point(0.0, 0.0, 1.0);
 
-    let mut c = Canvas::new(900, 550);
+    for i in 1..12 {
+        let r = rotation_y(i as f64 * PI / 6.0);
+        let mut point = r * twelve;
+        point.x = point.x * radius + center.x;
+        point.z = point.z * radius + center.z;
 
-    while projectile.position.y > 0.0 {
-        projectile.tick(&environment);
-        let color = Color::new(1.0, 0.0, 0.0);
-
-        if projectile.position.y > 0.0 {
-            println!(
-                "drawing at coord: ({}, {})",
-                projectile.position.x as usize, projectile.position.y as usize,
-            );
-            c.write_pixel(
-                projectile.position.x as usize,
-                projectile.position.y as usize,
-                color,
-            );
-        }
+        c.write_pixel(
+            point.x as usize,
+            point.z as usize,
+            Color::new(1.0, 1.0, 1.0),
+        );
     }
+
+    c.write_pixel(
+        (twelve.x * radius + center.x) as usize,
+        (twelve.z * radius + center.z) as usize,
+        Color::new(1.0, 1.0, 1.0),
+    );
+
+    c.write_pixel(
+        center.x as usize,
+        center.z as usize,
+        Color::new(1.0, 1.0, 1.0),
+    );
 
     c.write_to_ppm(Path::new("test.ppm")).unwrap();
 
