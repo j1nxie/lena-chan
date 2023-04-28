@@ -1,5 +1,9 @@
 use crate::matrix::Matrix;
 
+// TODO: implement a fluent API for this
+// e.g. transform = matrix.rotate_x().scale().translate();
+// basically letting u chain method calls instead of just functions.
+// good exercise for refactoring :p
 pub fn translation(x: f64, y: f64, z: f64) -> Matrix {
     let mut matrix = Matrix::identity_matrix(4);
     matrix[(0, 3)] = x;
@@ -238,5 +242,33 @@ mod tests {
         let p = Tuple::point(2.0, 3.0, 4.0);
 
         assert_eq!(transform * p, Tuple::point(2.0, 3.0, 7.0));
+    }
+
+    #[test]
+    fn test_transform_sequence() {
+        let p = Tuple::point(1.0, 0.0, 1.0);
+        let a = rotation_x(PI / 2.0);
+        let b = scaling(5.0, 5.0, 5.0);
+        let c = translation(10.0, 5.0, 7.0);
+
+        let p2 = a * p;
+        let p3 = b * p2;
+        let p4 = c * p3;
+
+        assert_eq!(p2, Tuple::point(1.0, -1.0, 0.0));
+        assert_eq!(p3, Tuple::point(5.0, -5.0, 0.0));
+        assert_eq!(p4, Tuple::point(15.0, 0.0, 7.0));
+    }
+
+    #[test]
+    fn test_transform_sequence_chained() {
+        let p = Tuple::point(1.0, 0.0, 1.0);
+        let a = rotation_x(PI / 2.0);
+        let b = scaling(5.0, 5.0, 5.0);
+        let c = translation(10.0, 5.0, 7.0);
+
+        let t = c * b * a;
+
+        assert_eq!(t * p, Tuple::point(15.0, 0.0, 7.0));
     }
 }
