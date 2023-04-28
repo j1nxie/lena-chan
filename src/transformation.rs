@@ -112,6 +112,7 @@ mod tests {
         assert_eq!(transform * v, Tuple::vector(-8.0, 18.0, 32.0));
     }
 
+    // FIXME: this fails due to floating point imprecision and all of that.
     #[test]
     fn test_mul_scaling_matrix_inverse() {
         let transform = scaling(2.0, 3.0, 4.0);
