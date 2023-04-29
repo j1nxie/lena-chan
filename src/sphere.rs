@@ -1,4 +1,4 @@
-use crate::ray::Ray;
+use crate::{ray::Ray, tuple::Tuple};
 
 pub struct Sphere;
 
@@ -7,18 +7,31 @@ impl Sphere {
         Sphere
     }
 
-    pub fn intersect(&self, ray: Ray) -> Vec<f64> {}
+    pub fn intersect(&self, ray: Ray) -> Vec<f64> {
+        let sphere_to_ray = ray.origin - Tuple::point(0.0, 0.0, 0.0);
+        let a = ray.direction * ray.direction;
+        let b = 2.0 * (ray.direction * sphere_to_ray);
+        let c = sphere_to_ray * sphere_to_ray - 1.0;
+
+        let discriminant = b * b - 4.0 * a * c;
+        if discriminant < 0.0 {
+            vec![]
+        } else {
+            let t1 = (-b - f64::sqrt(discriminant)) / (2.0 * a);
+            let t2 = (-b + f64::sqrt(discriminant)) / (2.0 * a);
+
+            vec![t1, t2]
+        }
+    }
 }
 
 #[cfg(test)]
 mod tests {
-    use crate::tuple::Tuple;
-
     use super::*;
 
     #[test]
     fn test_create_sphere() {
-        let sphere = Sphere::new();
+        Sphere::new();
     }
 
     #[test]
