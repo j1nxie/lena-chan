@@ -41,7 +41,7 @@ pub enum Object {
     Sphere(Sphere),
 }
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Copy, Debug)]
 pub struct Intersection {
     pub value: f64,
     pub object: Object,
