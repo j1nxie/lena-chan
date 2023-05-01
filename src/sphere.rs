@@ -124,4 +124,15 @@ mod tests {
         assert_float_eq!(i.value, 3.5, abs <= EPSILON);
         assert_eq!(i.object, Object::Sphere(s));
     }
+
+    #[test]
+    fn test_intersect_set_object() {
+        let r = Ray::new(Tuple::point(0.0, 0.0, -5.0), Tuple::vector(0.0, 0.0, 1.0));
+        let s = Sphere::new();
+        let xs = s.intersect(r);
+
+        assert_eq!(xs.len(), 2);
+        assert_eq!(xs[0].object, Object::Sphere(s));
+        assert_eq!(xs[1].object, Object::Sphere(s));
+    }
 }
