@@ -6,6 +6,8 @@ use std::{f64::consts::PI, fs, path::Path, process::Command};
 mod canvas;
 mod color;
 mod matrix;
+mod ray;
+mod sphere;
 mod transformation;
 mod tuple;
 

@@ -1,5 +1,8 @@
 # renachan 
 
+this is in an extremely alpha state. doesn't work at all and not everything is
+implemented.
+
 ## license
 
 licensed under either of
